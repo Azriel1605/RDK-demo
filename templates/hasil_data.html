@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Hasil Data - Flask Warm App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center" style="margin-bottom: 2rem;">
+        <h2 style="color: #8d6e63; font-size: 2rem;">📊 Hasil Data</h2>
+        <p style="color: #6d4c41;">Navigate through different data sections</p>
+    </div>
+    
+    <div class="grid grid-4">
+        {% for i in range(0, 13) %}
+        <a href="{{ url_for('dynamic_page', page_num=i) }}" class="btn" style="padding: 1.5rem; text-align: center; text-decoration: none; display: block;">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">
+                {% if i == 0 %}📊
+                {% elif i == 1 %}👨‍👩‍👧‍👦
+                {% elif i == 2 %}🤰
+                {% elif i == 3 %}👶
+                {% elif i == 4 %}🧑‍🎓
+                {% elif i == 5 %}🧓
+                {% elif i == 6 %}👶
+                {% elif i == 7 %}🧑
+                {% elif i == 8 %}🚺
+                {% elif i == 9 %}🧓
+                {% elif i == 10 %}🏥
+                {% elif i == 11 %}🧑‍🦽
+                {% else %}📚
+                {% endif %}
+            </div>
+            {% if i == 0 %} <strong>Semua data</strong>
+            {% elif i == 1 %}<strong>Keluarga PUS</strong>
+            {% elif i == 2 %}<strong>Keluarga dengan status Ibu Hamil</strong>
+            {% elif i == 3 %}<strong>Keluarga yang memiliki Balita</strong>
+            {% elif i == 4 %}<strong>Keluarga yang memiliki Remaja</strong>
+            {% elif i == 5 %}<strong>Keluarga yang memiliki Lansia</strong>
+            {% elif i == 6 %}<strong>Kelompok Usia Balita</strong>
+            {% elif i == 7 %}<strong>Kelompok Usia Remaja</strong>
+            {% elif i == 8 %}<strong>Kelompok wanita usia subur</strong>
+            {% elif i == 9 %}<strong>Kelompok usia Lansia</strong>
+            {% elif i == 10 %}<strong>Kelompok KB</strong>
+            {% elif i == 11 %}<strong>Keluarga dengan status Disabilitas</strong>
+            {% else %}<strong>Keluarga dengan status putus sekolah</strong>
+            {% endif %}
+        </a>
+        {% endfor %}
+    </div>
+    
+    <div style="margin-top: 2rem; text-align: center;">
+        <a href="{{ url_for('index') }}" class="btn">🏠 Back to Home</a>
+    </div>
+</div>
+{% endblock %}

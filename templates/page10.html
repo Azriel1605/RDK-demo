@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{%block head%}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+{% endblock %}
+
+{% block title %}Page {{ page_num }} - Flask Warm App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center" style="margin-bottom: 2rem;">
+        <h2 style="color: #8d6e63; font-size: 2rem;">
+            ❤️ Kelompok Keluarga berdasarkan jenis KB
+        </h2>
+        <p style="color: #6d4c41;"></p>
+    </div>
+    
+    <div style="background: linear-gradient(135deg, #fff8e1, #f3e5ab); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h3 style="color: #8d6e63; margin-bottom: 1rem;">📋 Penjelasan Singkat</h3>
+        <p style="color: #5d4037;">Laman ini menunjukkan Data Keluarga berdasarkan jenis KB</p>
+
+        <p style="color: #5d4037; line-height: 1.6;">
+            Keluarga dengan jenis KB tertentu memiliki karakteristik dan kebutuhan yang berbeda. Data mengenai Keluarga berdasarkan jenis KB penting untuk perencanaan program kesehatan, sosial, dan dukungan bagi penyandang disabilitas.
+        </p>
+
+        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.7); border-radius: 10px;">
+            <h4 id="pusCount1" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Keluarga Dengan KB Tradisional:</h4>
+            <h4 id="pusCount2" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Keluarga Dengan KB Kondom:</h4>
+            <h4 id="pusCount3" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Keluarga Dengan KB Pil:</h4>
+            <h4 id="pusCount4" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Keluarga Dengan KB Suntik:</h4>
+            <h4 id="pusCount5" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Keluarga Dengan KB Implan:</h4>
+            <h4 id="pusCount6" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Keluarga Dengan KB IUD:</h4>
+            <h4 id="pusCount7" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Keluarga Dengan KB MOW:</h4>
+            <h4 id="pusCount8" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Keluarga Dengan KB MOP:</h4>
+
+            <script>
+            fetch('/api/kelompok-kb')
+            .then(res => res.json())
+            .then(data => {
+                const counts = data.recordsTotal;
+
+                const labels = {
+                1: 'Tradisional',
+                2: 'Kondom',
+                3: 'Pil',
+                4: 'Suntik',
+                5: 'Implan',
+                6: 'IUD',   // fixed from "Lud"
+                7: 'MOW',
+                8: 'MOP'
+                };
+
+                for (let i = 1; i <= 8; i++) {
+                const el = document.getElementById(`pusCount${i}`);
+                if (el) {
+                    el.textContent = `Banyaknya Keluarga Dengan KB ${labels[i]}: ${counts[i] ?? 0}`;
+                }
+                }
+            })
+            .catch(error => {
+                console.error("Failed to fetch PUS counts:", error);
+            });
+            </script>
+
+
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #fff8e1, #f3e5ab); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h1>Family Table</h1>
+        <table id="familyTable" class="display", style="width:100%">
+            <thead>
+            <tr>
+                <th>KK</th>
+                <th>Kepala Keluarga</th>
+                <th>RT</th>
+                <th>RW</th>
+            </tr>
+            </thead>
+        </table>
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#familyTable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    scrollX: true,
+                    ajax: '/api/kelompok-kb',
+                    columns: [
+                    { data: 'kk' },
+                    { data: 'head' },
+                    { data: 'rt' },
+                    { data: 'rw' }
+                    ]
+                });
+            });
+        </script>
+    </div>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        {% if page_num > 1 %}
+            <a href="{{ url_for('dynamic_page', page_num=page_num-1) }}" class="btn">⬅️ Previous Page</a>
+        {% endif %}
+        
+        <a href="{{ url_for('hasil_data') }}" class="btn btn-primary">📊 Back to Hasil Data</a>
+        
+        {% if page_num < 12 %}
+            <a href="{{ url_for('dynamic_page', page_num=page_num+1) }}" class="btn">Next Page ➡️</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

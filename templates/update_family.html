@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Manual Input - Flask Warm App{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('update_family', id=family.id) }}" style="margin-top: 2rem;">
+        <!-- KEPALA KELUARGA -->
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 2rem;">
+                <h2 style="color: #8d6e63; font-size: 2rem;">✍️ DATA KELUARGA</h2>
+                <p style="color: #6d4c41;">Fill in the form below to edit data</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">🏠 RW</label>
+                <input type="text" name="rw" class="form-control" value="{{ family.rw }}" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">🏠 Rt</label>
+                <input type="text" name="rt" class="form-control" value="{{ family.rt }}">
+            </div>
+
+            <div class="form-group">
+                <label for="address" class="form-label">🏠 Alamat</label>
+                <textarea name="alamat" class="form-control" rows="3">{{ family.address | safe }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">🪪 No KK</label>
+                <input type="text" name="kk" class="form-control" value="{{ family.kk }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="form-label">💊 Jenis KB yang digunakan</label>
+                <select name="kb" class="form-control" style="margin-top: 0.5rem;" required>
+                    <option value="">-- Pilih Metode KB --</option>
+                    <option value="KB tradisional" {% if family.kb == "KB tradisional" %}selected{% endif %}>KB Tradisional</option>
+                    <option value="Kondom" {% if family.kb == "Kondom" %}selected{% endif %}>Kondom</option>
+                    <option value="Pil" {% if family.kb == "Pil" %}selected{% endif %}>Pil</option>
+                    <option value="Suntik" {% if family.kb == "Suntik" %}selected{% endif %}>Suntik</option>
+                    <option value="Implan" {% if family.kb == "Implan" %}selected{% endif %}>Implan</option>
+                    <option value="Iud" {% if family.kb == "Iud" %}selected{% endif %}>IUD</option>
+                    <option value="Mow" {% if family.kb == "Mow" %}selected{% endif %}>MOW (Metode Operasi Wanita)</option>
+                    <option value="Mop" {% if family.kb == "Mop" %}selected{% endif %}>MOP (Metode Operasi Pria)</option>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <label for="pregnancyStatus" class="form-label">🤰 Status Hamil</label>
+                <select name="status_hamil" class="form-control" required>
+                    <option value="">-- Pilih Status --</option>
+                    <option value="ya" {% if family.status_hamil %}selected{% endif %}>Ya</option>
+                    <option value="tidak" {% if not family.status_hamil %}selected{% endif %}>Tidak</option>
+                </select>
+            </div>
+
+            
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Save Data</button>
+                <a href="{{ url_for('dynamic_page', page_num=0) }}" class="btn" style="flex: 1; text-align: center;">↩️ Back</a>
+            </div>
+
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{%block head%}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+{% endblock %}
+
+{% block title %}Page {{ page_num }} - Flask Warm App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center" style="margin-bottom: 2rem;">
+        <h2 style="color: #8d6e63; font-size: 2rem;">
+            👩 Kelompok wanita usia subur
+        </h2>
+        <p style="color: #6d4c41;">Wanita Usia Subur adalah wanita yang berusia 15 hingga 49 tahun.</p>
+    </div>
+    
+    <div style="background: linear-gradient(135deg, #fff8e1, #f3e5ab); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h3 style="color: #8d6e63; margin-bottom: 1rem;">📋 Penjelasan Singkat</h3>
+        <p style="color: #5d4037;">Laman ini menunjukkan Data Kelompok Wanita Usia Subur</p>
+
+        <p style="color: #5d4037; line-height: 1.6;">
+            Kelompok Wanita Usia Subur adalah kelompok yang terdiri dari wanita usia 15 hingga 49 tahun. Data mengenai Kelompok Wanita Usia Subur penting untuk perencanaan program kesehatan ibu dan anak, serta pelayanan kesehatan reproduksi.
+        </p>
+
+        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.7); border-radius: 10px;">
+            {% if session.role == 'admin' or session.role == 'superadmin' %}
+                <h4 id="pusCount" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Data Wanita Usia Subur</h4>
+                <h4 id="pusCount1" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 1:</h4>
+                <h4 id="pusCount2" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 2:</h4>
+                <h4 id="pusCount3" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 3:</h4>
+                <h4 id="pusCount4" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 4:</h4>
+                <h4 id="pusCount5" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 5:</h4>
+                <h4 id="pusCount6" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 6:</h4>
+                <h4 id="pusCount7" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 7:</h4>
+                <h4 id="pusCount8" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 8:</h4>
+                <h4 id="pusCount9" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 9:</h4>
+                <h4 id="pusCount10" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 10:</h4>
+                <h4 id="pusCount11" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 11:</h4>
+                <h4 id="pusCount12" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 12:</h4>
+
+                <script>
+                fetch('/api/kelompok-usia-subur')
+                .then(res => res.json())
+                .then(data => {
+                    const counts = data.recordsTotal;
+                    for (let i = 1; i <= 12; i++) {
+                    const el = document.getElementById(`pusCount${i}`);
+                    if (el) {
+                        el.textContent = `Banyaknya Data Wanita Usia Subur RW ${i}: ${counts[i] ?? 0}`;
+                    }
+                    }
+                })
+                .catch(error => {
+                    console.error("Failed to fetch PUS counts:", error);
+                });
+                </script>
+
+            {% else %}
+                <h4 id="pusCount" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Data Wanita Usia Subur RW {{session.role}}:</h4>
+                <script>
+                    fetch('/api/kelompok-usia-subur')
+                    .then(res => res.json())
+                    .then(data => {
+                        const count = data.recordsTotal?.[0] ?? 0; // Get first item or fallback to 0
+                        const el = document.getElementById("pusCount");
+                        if (el) {
+                            el.textContent = `Banyaknya Data Wanita Usia Subur RW {{session.role}}: ${count}`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Failed to fetch PUS count:", error);
+                    });
+                </script>
+            {% endif %}
+
+            <!--<ul style="color: #5d4037; margin-left: 1.5rem;">
+                <li>Display specific data tables or charts</li>
+                <li>Show filtered results based on categories</li>
+                <li>Implement different forms or input methods</li>
+                <li>Add page-specific functionality</li>
+            </ul> -->
+            </script>
+        </div>
+        
+    </div>
+
+    <div style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
+        <label for="referenceDate" style="font-weight: bold; color: #6d4c41;">📅 Pilih Tanggal:</label>
+        <input type="date" id="referenceDate" style="padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc;">
+        <button onclick="reloadTableWithDate()" style="padding: 0.5rem 1rem; background-color: #6d4c41; color: white; border: none; border-radius: 5px;">🔄 Tampilkan</button>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #fff8e1, #f3e5ab); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h1>Family Table</h1>
+        <table id="familyTable" class="display", style="width:100%">
+            <thead>
+            <tr>
+                <th>nama</th>
+                <th>tanggal lahir</th>
+                <th>jenis kelamin</th>
+                <th>status disabilitas</th>
+                <th>status pendidikan terakhir</th>
+            </tr>
+            </thead>
+        </table>
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script>
+            let table;
+
+            // Set today's date on page load
+            document.addEventListener('DOMContentLoaded', () => {
+                const input = document.getElementById('referenceDate');
+                const today = new Date().toISOString().split('T')[0];
+                input.value = today;
+
+                table = $('#familyTable').DataTable({
+                processing: true,
+                serverSide: true,
+                scrollX: true,
+                ajax: {
+                    url:'/api/kelompok-usia-subur',
+                    data: function (d) {
+                        d.reference_date = document.getElementById('referenceDate').value;
+                    }
+                },
+                columns: [
+                    { data: 'nama' },
+                    { data: 'tanggal lahir' },
+                    { data: 'gender' },
+                    { data: 'disability' },
+                    { data: 'pendidikan' }
+                ]
+                });
+
+            });
+
+            // Function to reload the table with selected date
+            function reloadTableWithDate() {
+                table.ajax.reload(); // Use .reload(), not .load()
+            }
+        </script>
+    </div>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        {% if page_num > 1 %}
+            <a href="{{ url_for('dynamic_page', page_num=page_num-1) }}" class="btn">⬅️ Previous Page</a>
+        {% endif %}
+        
+        <a href="{{ url_for('hasil_data') }}" class="btn btn-primary">📊 Back to Hasil Data</a>
+        
+        {% if page_num < 12 %}
+            <a href="{{ url_for('dynamic_page', page_num=page_num+1) }}" class="btn">Next Page ➡️</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

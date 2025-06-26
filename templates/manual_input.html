@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}Manual Input - Flask Warm App{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('manual_input') }}" style="margin-top: 2rem;">
+        <!-- KEPALA KELUARGA -->
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 2rem;">
+                <h2 style="color: #8d6e63; font-size: 2rem;">✍️ Informasi Keluarga</h2>
+                <p style="color: #6d4c41;">Fill in the form below to add new data</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">🪪 No KK</label>
+                <input type="text" name="kk" class="form-control" required pattern="\d{16}" title="Harus 16 digit angka" maxlength="16" minlength="16" inputmode="numeric">
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="form-label">🏠 Rt</label>
+                <input type="text" name="rt" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="form-label">🏠 RW</label>
+                {% if session.role == 'admin' or session.role == 'superadmin' %}
+                <input type="text" name="rw" class="form-control" required>
+                {% else %}
+                <input type="text" name="rw" class="form-control" value="{{ session.role }}" readonly>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="address" class="form-label">🏠 Alamat</label>
+                <textarea name="alamat" class="form-control" rows="3"></textarea>
+            </div>
+
+        </div>
+        
+        <br>
+
+        <!-- Kepala Keluarga -->
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 2rem;">
+                <h2 style="color: #8d6e63; font-size: 2rem;">✍️ Kepala Keluarga</h2>
+                <p style="color: #6d4c41;">Fill in the form below to add new data</p>
+            </div>
+
+            <div class="form-group">
+                <label for="name" class="form-label">👤 Nama Kepala Keluarga</label>
+                <input type="text" name="kepala-nama" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="gender" class="form-label">🚻 Jenis Kelamin</label>
+                <select name="kepala-gender" class="form-control" required>
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="laki-laki">Laki-laki</option>
+                    <option value="perempuan">Perempuan</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">🪪 NIK</label>
+                <input type="tel" name="kepala-nik" class="form-control" required pattern="\d{16}" title="Harus 16 digit angka" maxlength="16" minlength="16" inputmode="numeric">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">📅 Tanggal Lahir</label>
+                <input type="date" name="kepala-dob" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="statusDisabilitas" class="form-label">♿ Status Disabilitas</label>
+                <select name="kepala-disability" class="form-control" required>
+                    <option value="">-- Pilih Status --</option>
+                    <option value="tidak">Tidak</option>
+                    <option value="netra">Disabilitas Netra</option>
+                    <option value="rungu">Disabilitas Rungu</option>
+                    <option value="wicara">Disabilitas Wicara</option>
+                    <option value="daksa">Disabilitas Daksa</option>
+                    <option value="intelektual">Disabilitas Intelektual</option>
+                    <option value="psikososial">Disabilitas Psikososial</option>
+                    <option value="ganda">Disabilitas Ganda</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="pendidikanTerakhir" class="form-label">🎓 Status Pendidikan Terakhir</label>
+                <select name="kepala-pendidikan" class="form-control" required>
+                    <option value="">-- Pilih Pendidikan Terakhir --</option>
+                    <option value="Putus Sekolah">Putus Sekolah</option>
+                    <option value="Belum Sekolah">Belum Sekolah</option>
+                    <option value="SD">SD</option>
+                    <option value="SMP">SMP</option>
+                    <option value="SMA">SMA</option>
+                    <option value="S1">S1</option>
+                    <option value="S2">S2</option>
+                    <option value="S3">S3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pendidikanTerakhir" class="form-label">💍 Status Menikah</label>
+                <select name="kepala-menikah" class="form-control" required>
+                    <option value="">-- Pilih Status Menikah --</option>
+                    <option value="Belum Menikah">Belum Menikah</option>
+                    <option value="Menikah">Menikah</option>
+                    <option value="Cerai">Cerai</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="form-label">💊 Jenis KB yang digunakan</label>
+                <select name="kb" class="form-control" style="margin-top: 0.5rem;" required>
+                    <option value="">-- Pilih Metode KB --</option>
+                    <option value="Tidak">Tidak</option>
+                    <option value="KB tradisional">KB Tradisional</option>
+                    <option value="Kondom">Kondom</option>
+                    <option value="Pil">Pil</option>
+                    <option value="Suntik">Suntik</option>
+                    <option value="Implan">Implan</option>
+                    <option value="Iud">IUD</option>
+                    <option value="Mow">MOW (Metode Operasi Wanita)</option>
+                    <option value="Mop">MOP (Metode Operasi Pria)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pekerjaan" class="form-label">Jenis pekerjaan</label>
+                <select name="kepala-job" class="form-control" style="margin-top: 0.5rem;" required>
+                    <option value="">-- Pilih Jenis Pekerjaan --</option>
+                    <option value="Belum bekerja">Belum bekerja</option>
+                    <option value="Buruh harian lepas">Buruh harian lepas</option>
+                    <option value="Pedagang">Pedagang</option>
+                    <option value="Wiraswasta">Wiraswasta</option>
+                    <option value="Pegawai swasta/honorer">Pegawai swasta/honorer</option>
+                    <option value="PNS/BUMN">PNS/BUMN</option>
+                    <option value="TNI/Polri">TNI/Polri</option>
+                    <option value="Pensiunan">Pensiunan</option>
+                    <option value="Mengurus rumah tangga">Mengurus rumah tangga</option>
+                </select>
+            </div>
+             
+        </div>
+
+        <br>
+
+        <!-- Istri Keluarga -->
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 2rem;">
+                <h2 style="color: #8d6e63; font-size: 2rem;">✍️ Istri Keluarga</h2>
+                <p style="color: #6d4c41;">Fill in the form below to add new data</p>
+            </div>
+
+            <div class="form-group">
+                <label for="name" class="form-label">👤 Nama Istri</label>
+                <input type="text" name="istri-nama" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">🪪 NIK</label>
+                <input type="text" name="istri-nik" class="form-control" pattern="\d{16}" title="Harus 16 digit angka" maxlength="16" minlength="16" inputmode="numeric">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">📅 Tanggal Lahir</label>
+                <input type="date" name="istri-dob" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="statusDisabilitas" class="form-label">♿ Status Disabilitas</label>
+                <select name="istri-disability" class="form-control">
+                    <option value="">-- Pilih Status --</option>
+                    <option value="tidak">Tidak</option>
+                    <option value="netra">Disabilitas Netra</option>
+                    <option value="rungu">Disabilitas Rungu</option>
+                    <option value="wicara">Disabilitas Wicara</option>
+                    <option value="daksa">Disabilitas Daksa</option>
+                    <option value="intelektual">Disabilitas Intelektual</option>
+                    <option value="psikososial">Disabilitas Psikososial</option>
+                    <option value="ganda">Disabilitas Ganda</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="pendidikanTerakhir" class="form-label">🎓 Status Pendidikan Terakhir</label>
+                <select name="istri-pendidikan" class="form-control">
+                    <option value="">-- Pilih Pendidikan Terakhir --</option>
+                    <option value="Putus Sekolah">Putus Sekolah</option>
+                    <option value="Belum Sekolah">Belum Sekolah</option>
+                    <option value="SD">SD</option>
+                    <option value="SMP">SMP</option>
+                    <option value="SMA">SMA</option>
+                    <option value="S1">S1</option>
+                    <option value="S2">S2</option>
+                    <option value="S3">S3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pendidikanTerakhir" class="form-label">💍 Status Menikah</label>
+                <select name="istri-menikah" class="form-control">
+                    <option value="">-- Pilih Status Menikah --</option>
+                    <option value="Belum Menikah">Belum Menikah</option>
+                    <option value="Menikah">Menikah</option>
+                    <option value="Cerai">Cerai</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pekerjaan" class="form-label">Jenis pekerjaan</label>
+                <select name="istri-job" class="form-control" style="margin-top: 0.5rem;" >
+                    <option value="">-- Pilih Jenis Pekerjaan --</option>
+                    <option value="Belum bekerja">Belum bekerja</option>
+                    <option value="Buruh harian lepas">Buruh harian lepas</option>
+                    <option value="Pedagang">Pedagang</option>
+                    <option value="Wiraswasta">Wiraswasta</option>
+                    <option value="Pegawai swasta/honorer">Pegawai swasta/honorer</option>
+                    <option value="PNS/BUMN">PNS/BUMN</option>
+                    <option value="TNI/Polri">TNI/Polri</option>
+                    <option value="Pensiunan">Pensiunan</option>
+                    <option value="Mengurus rumah tangga">Mengurus rumah tangga</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pregnancyStatus" class="form-label">🤰 Status Hamil</label>
+                <select name="hamil" class="form-control">
+                    <option value="">-- Pilih Status --</option>
+                    <option value="ya">Ya</option>
+                    <option value="tidak">Tidak</option>
+                </select>
+            </div>
+             
+        </div>
+
+        <!-- Anggota Keluarga -->
+        {% for i in range(1, 11) %}
+        <br>
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 2rem;">
+                <h2 style="color: #8d6e63; font-size: 2rem;">✍️ Anggota Keluarga {{ i }}</h2>
+                <p style="color: #6d4c41;">Fill in the form below to add new data</p>
+            </div>
+
+            <div class="form-group">
+                <label for="name" class="form-label">👤 Nama Anggota Keluarga</label>
+                <input type="text" name="anggota{{i}}-nama" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label for="gender" class="form-label">🚻 Jenis Kelamin</label>
+                <select name="anggota{{i}}-gender" class="form-control">
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="laki-laki">Laki-laki</option>
+                    <option value="perempuan">Perempuan</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">🪪 NIK</label>
+                <input type="text" name="anggota{{i}}-nik" class="form-control" pattern="\d{16}" title="Harus 16 digit angka" maxlength="16" minlength="16" inputmode="numeric">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label">📅 Tanggal Lahir</label>
+                <input type="date" name="anggota{{i}}-dob" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="statusDisabilitas" class="form-label">♿ Status Disabilitas</label>
+                <select name="anggota{{i}}-disability" class="form-control">
+                    <option value="">-- Pilih Status --</option>
+                    <option value="tidak">Tidak</option>
+                    <option value="netra">Disabilitas Netra</option>
+                    <option value="rungu">Disabilitas Rungu</option>
+                    <option value="wicara">Disabilitas Wicara</option>
+                    <option value="daksa">Disabilitas Daksa</option>
+                    <option value="intelektual">Disabilitas Intelektual</option>
+                    <option value="psikososial">Disabilitas Psikososial</option>
+                    <option value="ganda">Disabilitas Ganda</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="pendidikanTerakhir" class="form-label">🎓 Status Pendidikan Terakhir</label>
+                <select name="anggota{{i}}-pendidikan" class="form-control">
+                    <option value="">-- Pilih Pendidikan Terakhir --</option>
+                    <option value="Putus Sekolah">Putus Sekolah</option>
+                    <option value="Belum Sekolah">Belum Sekolah</option>
+                    <option value="SD">SD</option>
+                    <option value="SMP">SMP</option>
+                    <option value="SMA">SMA</option>
+                    <option value="S1">S1</option>
+                    <option value="S2">S2</option>
+                    <option value="S3">S3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pendidikanTerakhir" class="form-label">💍 Status Menikah</label>
+                <select name="anggota{{i}}-menikah" class="form-control">
+                    <option value="">-- Pilih Status Menikah --</option>
+                    <option value="Belum Menikah">Belum Menikah</option>
+                    <option value="Menikah">Menikah</option>
+                    <option value="Cerai">Cerai</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="statusKeluarga" class="form-label">Status Dengan Kepala Keluarga</label>
+                <select name="anggota{{i}}-status" class="form-control">
+                    <option value="">-- Pilih Status --</option>
+                    <option value="Anak">Anak</option>
+                    <option value="Ayah">Ayah</option>
+                    <option value="Ibu">Ibu</option>
+                    <option value="Kakek">Kakek</option>
+                    <option value="Nenek">Nenek</option>
+                    <option value="Keponakan">Keponakan</option>
+                    <option value="Cucu">Cucu</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pekerjaan" class="form-label">Jenis pekerjaan</label>
+                <select name="anggota{{i}}-job" class="form-control" style="margin-top: 0.5rem;">
+                    <option value="">-- Pilih Jenis Pekerjaan --</option>
+                    <option value="Belum bekerja">Belum bekerja</option>
+                    <option value="Buruh harian lepas">Buruh harian lepas</option>
+                    <option value="Pedagang">Pedagang</option>
+                    <option value="Wiraswasta">Wiraswasta</option>
+                    <option value="Pegawai swasta/honorer">Pegawai swasta/honorer</option>
+                    <option value="PNS/BUMN">PNS/BUMN</option>
+                    <option value="TNI/Polri">TNI/Polri</option>
+                    <option value="Pensiunan">Pensiunan</option>
+                    <option value="Mengurus rumah tangga">Mengurus rumah tangga</option>
+                </select>
+            </div>
+
+        </div>
+        {% endfor %}
+        <br>
+        <div class="card">
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Save Data</button>
+            <a href="{{ url_for('input_data') }}" class="btn" style="flex: 1; text-align: center;">↩️ Back</a>
+        </div>
+        </div>
+    
+    </form>
+</div>
+{% endblock %}

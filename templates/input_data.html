@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Input Data - Flask Warm App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center" style="margin-bottom: 2rem;">
+        <h2 style="color: #8d6e63; font-size: 2rem;">📝 Input Data</h2>
+        <p style="color: #6d4c41;">Choose your preferred input method</p>
+    </div>
+    
+    <div class="grid grid-2">
+        <div class="card" style="background: linear-gradient(135deg, #e8f5e8, #c8e6c9); text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">✍️</div>
+            <h3 style="color: #2e7d32; margin-bottom: 1rem;">Manual Input</h3>
+            <p style="color: #1b5e20; margin-bottom: 2rem;">
+                Enter data manually using our user-friendly form interface.
+            </p>
+            <a href="{{ url_for('manual_input') }}" class="btn btn-primary">Start Manual Input</a>
+        </div>
+        
+        <div class="card" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+            <h3 style="color: #1565c0; margin-bottom: 1rem;">Excel Upload</h3>
+            <p style="color: #0d47a1; margin-bottom: 2rem;">
+                Upload data from Excel files (.xlsx, .xls) for bulk import.
+            </p>
+            <a href="{{ url_for('excel_upload') }}" class="btn btn-primary">Upload Excel File</a>
+        </div>
+    </div>
+    
+    <div style="margin-top: 2rem; text-align: center;">
+        <a href="{{ url_for('index') }}" class="btn">🏠 Back to Home</a>
+    </div>
+</div>
+{% endblock %}

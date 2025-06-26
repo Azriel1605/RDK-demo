@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Rumah Data Cipamokolan{% endblock %}
+
+{% block content %}
+<div class="card text-center">
+    <h1 style="color: #8d6e63; margin-bottom: 2rem; font-size: 2.5rem;">
+        🌟 Selamat Datang
+    </h1>
+    
+    {% if session.username %}
+        <div style="margin-bottom: 2rem;">
+            <h2 style="color: #6d4c41;">Hello, {{ session.username }}! 👋</h2>
+            <p style="font-size: 1.1rem; color: #5d4037; margin-top: 1rem;">
+                What would you like to do today?
+            </p>
+        </div>
+        
+        <div class="grid grid-2" style="margin-top: 2rem;">
+            <div class="card" style="background: linear-gradient(135deg, #fff8e1, #f3e5ab);">
+                <h3 style="color: #8d6e63; margin-bottom: 1rem;">📊 View Data</h3>
+                <p style="margin-bottom: 1.5rem;">Access your data results and navigate through different sections.</p>
+                <a href="{{ url_for('hasil_data') }}" class="btn btn-primary">Go to Hasil Data</a>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, #f1f8e9, #c8e6c9);">
+                <h3 style="color: #8d6e63; margin-bottom: 1rem;">📝 Add Data</h3>
+                <p style="margin-bottom: 1.5rem;">Input new data manually or upload from Excel files.</p>
+                <a href="{{ url_for('input_data') }}" class="btn btn-primary">Go to Input Data</a>
+            </div>
+        </div>
+    {% else %}
+        <div style="margin-bottom: 2rem;">
+            <p style="font-size: 1.2rem; color: #6d4c41; margin-bottom: 2rem;">
+                Please login to access the application features.
+            </p>
+            <a href="{{ url_for('login') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                🔐 Login Now
+            </a>
+        </div>
+        
+        <div style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.5); border-radius: 10px;">
+            <h3 style="color: #8d6e63; margin-bottom: 1rem;">✨ Features</h3>
+            <div class="grid grid-3">
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔐</div>
+                    <h4 style="color: #6d4c41;">Secure Login</h4>
+                    <p style="color: #5d4037;">Protected access with username and password</p>
+                </div>
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                    <h4 style="color: #6d4c41;">Data Management</h4>
+                    <p style="color: #5d4037;">Organize and view your data efficiently</p>
+                </div>
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+                    <h4 style="color: #6d4c41;">Excel Import</h4>
+                    <p style="color: #5d4037;">Upload data directly from Excel files</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

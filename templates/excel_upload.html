@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Excel Upload - Flask Warm App{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="card">
+        <div class="text-center" style="margin-bottom: 2rem;">
+            <h2 style="color: #8d6e63; font-size: 2rem;">📊 Excel Upload</h2>
+            <p style="color: #6d4c41;">Upload your Excel file to import data in bulk</p>
+        </div>
+        
+        <div style="background: #fff3e0; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+            <h4 style="color: #e65100; margin-bottom: 1rem;">📋 Excel Format Requirements:</h4>
+            <ul style="color: #bf360c; margin-left: 1.5rem;">
+                <li>Column headers: <strong>name</strong>, <strong>email</strong>, <strong>phone</strong>, <strong>address</strong></li>
+                <li>Supported formats: .xlsx, .xls</li>
+                <li>Maximum file size: 16MB</li>
+                <li>First row should contain column headers</li>
+                <li>
+                {% if session.role == 'admin' or session.role == 'superadmin' %}
+                <a href="{{ url_for('download_file', filename='Form_Data_Keluarga_admin.xlsx') }}">
+                    Click here to download the file
+                </a>
+                {% else %}
+                <a href="{{ url_for('download_file', filename='Form_Data_Keluarga_RW' ~ session.role ~ '.xlsx') }}">
+                    Click here to download the file
+                </a>
+
+                {% endif %}
+                </li>
+
+            </ul>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file" class="form-label">📁 Select Excel File</label>
+                <input type="file" id="file" name="file" class="form-control" accept=".xlsx,.xls" required>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">🚀 Upload & Import</button>
+                <a href="{{ url_for('input_data') }}" class="btn" style="flex: 1; text-align: center;">↩️ Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Manual Input - Flask Warm App{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <form method="POST" action="{{ url_for('update_person', id=person.id) }}" style="margin-top: 2rem;">
+        <!-- Anggota Keluarga 1 -->
+        <div class="card">
+            <div class="text-center" style="margin-bottom: 2rem;">
+                <h2 style="color: #8d6e63; font-size: 2rem;">✍️ Update Data Anggota Keluarga</h2>
+                <p style="color: #6d4c41;">Fill in the form below to update data</p>
+            </div>
+
+            <div class="form-group">
+                <label for="name" class="form-label">👤 Nama</label>
+                <input type="text" name="name" value="{{ person.name }}" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="gender" class="form-label">🚻 Jenis Kelamin</label>
+                <select name="gender" class="form-control">
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="Laki-laki" {% if person.gender == "Laki-laki" %}selected{% endif %}>Laki-laki</option>
+                    <option value="Perempuan" {% if person.gender == "Perempuan" %}selected{% endif %}>Perempuan</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">🪪 NIK</label>
+                <input type="text" name="nik" value="{{ person.nik }}" class="form-control" pattern="\d{16}" title="Harus 16 digit angka" maxlength="16" minlength="16" inputmode="numeric">
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="form-label">📅 Tanggal Lahir</label>
+                <input type="date" name="dob" value="{{ person.dob }}" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="statusDisabilitas" class="form-label">♿ Status Disabilitas</label>
+                <select name="disability" class="form-control">
+                    <option value="">-- Pilih Status --</option>
+                    <option value="Tidak" {% if person.disability == "Tidak" %}selected{% endif %}>Tidak</option>
+                    <option value="Disabilitas Netra" {% if person.disability == "Disabilitas Netra" %}selected{% endif %}>Disabilitas Netra</option>
+                    <option value="Disabilitas Rungu" {% if person.disability == "Disabilitas Rungu" %}selected{% endif %}>Disabilitas Rungu</option>
+                    <option value="Disabilitas Wicara" {% if person.disability == "Disabilitas Wicara" %}selected{% endif %}>Disabilitas Wicara</option>
+                    <option value="Disabilitas Daksa" {% if person.disability == "Disabilitas Daksa" %}selected{% endif %}>Disabilitas Daksa</option>
+                    <option value="Disabilitas Intelektual" {% if person.disability == "Disabilitas Intelektual" %}selected{% endif %}>Disabilitas Intelektual</option>
+                    <option value="Disabilitas Psikososial" {% if person.disability == "Disabilitas Psikososial" %}selected{% endif %}>Disabilitas Psikososial</option>
+                    <option value="Disabilitas Ganda" {% if person.disability == "Ganda" %}selected{% endif %}>Disabilitas Ganda</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pendidikanTerakhir" class="form-label">🎓 Status Pendidikan Terakhir</label>
+                <select name="pendidikan" class="form-control">
+                    <option value="">-- Pilih Pendidikan Terakhir --</option>
+                    <option value="Putus Sekolah" {% if person.pendidikan == "Putus Sekolah" %}selected{% endif %}>Putus Sekolah</option>
+                    <option value="Belum Sekolah" {% if person.pendidikan == "Belum Sekolah" %}selected{% endif %}>Belum Sekolah</option>
+                    <option value="SD" {% if person.pendidikan == "SD" %}selected{% endif %}>SD</option>
+                    <option value="SMP" {% if person.pendidikan == "SMP" %}selected{% endif %}>SMP</option>
+                    <option value="SMA" {% if person.pendidikan == "SMA" %}selected{% endif %}>SMA</option>
+                    <option value="S1" {% if person.pendidikan == "S1" %}selected{% endif %}>S1</option>
+                    <option value="S2" {% if person.pendidikan == "S2" %}selected{% endif %}>S2</option>
+                    <option value="S3" {% if person.pendidikan == "S3" %}selected{% endif %}>S3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pendidikanTerakhir" class="form-label">💍 Status Menikah</label>
+                <select name="menikah" class="form-control">
+                    <option value="">-- Pilih Status Menikah --</option>
+                    <option value="Belum Menikah" {% if person.menikah == "Belum Menikah" %}selected{% endif %}>Belum Menikah</option>
+                    <option value="Menikah" {% if person.menikah == "Menikah" %}selected{% endif %}>Menikah</option>
+                    <option value="Cerai" {% if person.menikah == "Cerai" %}selected{% endif %}>Cerai</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="statusKeluarga" class="form-label">Status Dengan Kepala Keluarga</label>
+                <select name="status" class="form-control">
+                    <option value="">-- Pilih Status --</option>
+                    <option value="Kepala Keluarga" {% if person.status == "Kepala Keluarga" %}selected{% endif %}>Kepala Keluarga</option>
+                    <option value="Anak" {% if person.status == "Anak" %}selected{% endif %}>Anak</option>
+                    <option value="Ayah" {% if person.status == "Ayah" %}selected{% endif %}>Ayah</option>
+                    <option value="Ibu" {% if person.status == "Ibu" %}selected{% endif %}>Ibu</option>
+                    <option value="Kakek" {% if person.status == "Kakek" %}selected{% endif %}>Kakek</option>
+                    <option value="Nenek" {% if person.status == "Nenek" %}selected{% endif %}>Nenek</option>
+                    <option value="Keponakan" {% if person.status == "Keponakan" %}selected{% endif %}>Keponakan</option>
+                    <option value="Cucu" {% if person.status == "Cucu" %}selected{% endif %}>Cucu</option>
+                    <option value="Lainnya" {% if person.status == "Lainnya" %}selected{% endif %}>Lainnya</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pekerjaan" class="form-label">Jenis pekerjaan</label>
+                <select name="job" class="form-control" style="margin-top: 0.5rem;">
+                    <option value="">-- Pilih Jenis Pekerjaan --</option>
+                    <option value="Belum bekerja" {% if person.pekerjaan == "Belum bekerja" %}selected{% endif %}>Belum bekerja</option>
+                    <option value="Buruh harian lepas" {% if person.pekerjaan == "Buruh harian lepas" %}selected{% endif %}>Buruh harian lepas</option>
+                    <option value="Pedagang" {% if person.pekerjaan == "Pedagang" %}selected{% endif %}>Pedagang</option>
+                    <option value="Wiraswasta" {% if person.pekerjaan == "Wiraswasta" %}selected{% endif %}>Wiraswasta</option>
+                    <option value="Pegawai swasta/honorer" {% if person.pekerjaan == "Pegawai swasta/honorer" %}selected{% endif %}>Pegawai swasta/honorer</option>
+                    <option value="PNS/BUMN" {% if person.pekerjaan == "PNS/BUMN" %}selected{% endif %}>PNS/BUMN</option>
+                    <option value="TNI/Polri" {% if person.pekerjaan == "TNI/Polri"%} selected{% endif %}>TNI/Polri</option>
+                    <option value="Pensiunan" {% if person.pekerjaan == "Pensiunan"%} selected{% endif %}>Pensiunan</option>
+                    <option value="Mengurus rumah tangga" {% if person.pekerjaan == "Mengurus rumah tangga" %}selected{% endif %}>Mengurus rumah tangga</option>
+                </select>
+            </div>
+
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">💾 Save Data</button>
+                <a href="{{ url_for('dynamic_page', page_num=0) }}" class="btn" style="flex: 1; text-align: center;">↩️ Back</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

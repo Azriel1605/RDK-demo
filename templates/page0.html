@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{%block head%}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+{% endblock %}
+
+{% block title %}Page {{ page_num }} - Flask Warm App{% endblock %}
+
+{% block style %}
+/* Update and Delete Buttons */
+.btn-update, .btn-delete, .btn-update-fam, .btn-delete-fam {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin: 0.25rem;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-update, .btn-update-fam {
+    background: linear-gradient(45deg, #81c784, #66bb6a);
+    color: white;
+    box-shadow: 0 2px 8px rgba(129, 199, 132, 0.3);
+}
+
+.btn-update:hover, .btn-update-fam:hover {
+    background: linear-gradient(45deg, #66bb6a, #4caf50);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(129, 199, 132, 0.4);
+}
+
+.btn-delete, .btn-delete-fam {
+    background: linear-gradient(45deg, #e57373, #ef5350);
+    color: white;
+    box-shadow: 0 2px 8px rgba(229, 115, 115, 0.3);
+}
+
+.btn-delete:hover, .btn-delete-fam:hover {
+    background: linear-gradient(45deg, #ef5350, #f44336);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(229, 115, 115, 0.4);
+}
+
+/* Alternative warm beige theme buttons */
+.btn-update-warm {
+    background: linear-gradient(45deg, #d2b48c, #bc9a6a);
+    color: #5d4037;
+    box-shadow: 0 2px 8px rgba(210, 180, 140, 0.3);
+}
+
+.btn-update-warm:hover {
+    background: linear-gradient(45deg, #bc9a6a, #a0845c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(210, 180, 140, 0.4);
+}
+
+.btn-delete-warm {
+    background: linear-gradient(45deg, #cd853f, #a0522d);
+    color: white;
+    box-shadow: 0 2px 8px rgba(205, 133, 63, 0.3);
+}
+
+.btn-delete-warm:hover {
+    background: linear-gradient(45deg, #a0522d, #8b4513);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(205, 133, 63, 0.4);
+}
+
+/* Small button variant */
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: 15px;
+}
+
+/* Button group styling */
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .btn-update, .btn-delete {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        margin: 0.2rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center" style="margin-bottom: 2rem;">
+        <h2 style="color: #8d6e63; font-size: 2rem;">
+            Semua data Keluarga
+        </h2>
+        <p style="color: #6d4c41;">Menampilkan KK dan anggota keluarga</p>
+    </div>
+    
+    <div style="background: linear-gradient(135deg, #fff8e1, #f3e5ab); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h3 style="color: #8d6e63; margin-bottom: 1rem;">📋 Penjelasan Singkat</h3>
+        <p style="color: #5d4037;">Laman ini menunjukkan Data Keluarga yang terdaftar pada website</p>
+
+        <p style="color: #5d4037; line-height: 1.6;">
+            Pada laman ini, Anda dapat melihat daftar keluarga yang terdaftar di sistem. Setiap keluarga ditampilkan dengan nomor KK (Kartu Keluarga), nama kepala keluarga, serta RT (Rukun Tetangga) dan RW (Rukun Warga) tempat mereka tinggal. Anda juga dapat melihat anggota keluarga masing-masing KK dengan mengklik pada baris yang sesuai. Serta, Anda dapat melakukan update atau delete data anggota keluarga tersebut.
+        </p>
+
+        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.7); border-radius: 10px;">
+            {% if session.role == 'admin' or session.role == 'superadmin' %}
+                <h4 id="pusCount" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Data Anggota Keluarga</h4>
+                <h4 id="pusCount1" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 1:</h4>
+                <h4 id="pusCount2" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 2:</h4>
+                <h4 id="pusCount3" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 3:</h4>
+                <h4 id="pusCount4" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 4:</h4>
+                <h4 id="pusCount5" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 5:</h4>
+                <h4 id="pusCount6" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 6:</h4>
+                <h4 id="pusCount7" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 7:</h4>
+                <h4 id="pusCount8" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 8:</h4>
+                <h4 id="pusCount9" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 9:</h4>
+                <h4 id="pusCount10" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 10:</h4>
+                <h4 id="pusCount11" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 11:</h4>
+                <h4 id="pusCount12" style="color: #6d4c41; margin-bottom: 0.5rem;">RW 12:</h4>
+                
+                <script>
+                fetch('/api/all-data')
+                .then(res => res.json())
+                .then(data => {
+                    const counts = data.recordsTotal;
+                    for (let i = 1; i <= 12; i++) {
+                    const el = document.getElementById(`pusCount${i}`);
+                    if (el) {
+                        el.textContent = `RW ${i}: ${counts[i] ?? 0}`;
+                    }
+                    }
+                })
+                .catch(error => {
+                    console.error("Failed to fetch PUS counts:", error);
+                });
+                </script>
+
+            {% else %}
+                <h4 id="pusCount" style="color: #6d4c41; margin-bottom: 0.5rem;">Banyaknya Data Anggota Keluarga RW {{session.role}}:</h4>
+                <script>
+                    fetch('/api/all-data')
+                    .then(res => res.json())
+                    .then(data => {
+                        const count = data.recordsTotal?.[0] ?? 0; // Get first item or fallback to 0
+                        const el = document.getElementById("pusCount");
+                        if (el) {
+                            el.textContent = `Banyaknya Data Anggota Keluarga RW {{session.role}}: ${count}`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Failed to fetch PUS count:", error);
+                    });
+                </script>
+            {% endif %}
+            </script>
+        </div>
+        
+    </div>
+
+    <div style="background: linear-gradient(135deg, #fff8e1, #f3e5ab); padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h1>Kelompok Keluarga</h1>
+        <table id="familyTable" class="display", style="width:100%">
+            <thead>
+            <tr>
+                <th></th> <!-- control column for expand -->
+                <th>KK</th>
+                <th>Kepala Keluarga</th>
+                <th>RT</th>
+                <th>RW</th>
+                <th>Aksi</th> <!-- 👈 New column -->
+            </tr>
+            </thead>
+        </table>
+
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        
+        <script>
+        function format(memberList) {
+            if (!memberList || memberList.length === 0) {
+                return '<div style="padding: 1rem;">Tidak ada anggota keluarga</div>';
+            }
+
+            let html = `
+                <div style="padding: 1rem; overflow-x: auto;">
+                    <table class="display compact" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            for (let member of memberList) {
+                html += `
+                    <tr>
+                        <td>${member.name}</td>
+                        <td>${member.status}</td>
+                        <td>
+                            <button class="btn-update" data-id="${member.id}">✏️ Update</button>
+                            <button class="btn-delete" data-id="${member.id}">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            html += '</tbody></table></div>';
+            return html;
+        }
+
+
+        $(document).ready(function () {
+            const table = $('#familyTable').DataTable({
+                processing: true,
+                serverSide: true,
+                scrollX: true,
+                ajax: '/api/all-data',
+                columns: [
+                    {
+                        className: 'dt-control',
+                        orderable: false,
+                        data: null,
+                        defaultContent: '',
+                    },
+                    { data: 'kk' },
+                    { data: 'head' },
+                    { data: 'rt' },
+                    { data: 'rw' },
+                    {
+                        data: 'id',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `
+                                <div class="btn-group">
+                                    <button class="btn-update-fam" data-id="${data}">✏️ Edit</button>
+                                    <button class="btn-delete-fam" data-id="${data}">🗑️ Delete</button>
+                                </div>
+                            `;
+                        }
+                    }
+                ],
+                order: [[1, 'asc']]
+            });
+
+            // Add event listener for opening and closing details
+            $('#familyTable tbody').on('click', 'td.dt-control', function () {
+                const tr = $(this).closest('tr');
+                const row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // Close row
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open row
+                    const memberList = row.data().members; // Expecting 'members' in JSON
+                    row.child(format(memberList)).show();
+                    tr.addClass('shown');
+                }
+            });
+        });
+
+        // Use event delegation for dynamically added buttons
+        $(document).on('click', '.btn-update', function () {
+            const personId = $(this).data('id');
+            // Redirect or open modal for update
+            window.location.href = `/update-person/${personId}`;
+        });
+
+        // Use event delegation for dynamically added buttons
+        $(document).on('click', '.btn-update-fam', function () {
+            const famId = $(this).data('id');
+            // Redirect or open modal for update
+            window.location.href = `/update-family/${famId}`;
+        });
+
+        $(document).on('click', '.btn-delete', function () {
+            const personId = $(this).data('id');
+
+            if (confirm('Apakah Anda yakin ingin menghapus anggota ini?')) {
+                fetch(`/delete-person/${personId}`, {
+                    method: 'DELETE'
+                })
+                .then(res => {
+                    if (res.ok) {
+                        alert('Berhasil dihapus!');
+                        $('#familyTable').DataTable().ajax.reload();
+                    } else {
+                        alert('Gagal menghapus data.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Terjadi kesalahan.');
+                });
+            }
+        });
+
+        $(document).on('click', '.btn-delete-fam', function () {
+            const famId = $(this).data('id');
+
+            if (confirm('Apakah Anda yakin ingin menghapus seluruh keluarga ini?')) {
+                fetch(`/delete-family/${famId}`, {
+                    method: 'DELETE'
+                })
+                .then(res => {
+                    if (res.ok) {
+                        alert('Berhasil dihapus!');
+                        $('#familyTable').DataTable().ajax.reload();
+                    } else {
+                        alert('Gagal menghapus data.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Terjadi kesalahan.');
+                });
+            }
+        });
+
+        </script>
+
+    </div>
+    
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        {% if page_num > 1 %}
+            <a href="{{ url_for('dynamic_page', page_num=page_num-1) }}" class="btn">⬅️ Previous Page</a>
+        {% endif %}
+        
+        <a href="{{ url_for('hasil_data') }}" class="btn btn-primary">📊 Back to Hasil Data</a>
+        
+        {% if page_num < 12 %}
+            <a href="{{ url_for('dynamic_page', page_num=page_num+1) }}" class="btn">Next Page ➡️</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
